@@ -18,7 +18,8 @@
 					throw Error('Invalid time lang: '+lang);
 			}
 		},
-		date(time, mode='full', apply_timezone=false){
+		
+		date(time, mode='full', apply_timezone){
 			if(!locale){
 				throw Error('Time locale not set');
 			}
@@ -36,7 +37,7 @@
 			}
 			else{
 				date = new Date();
-				if(apply_timezone){
+				if(apply_timezone == null || apply_timezone){
 					date.setTime((date.getTime() / 1000 - timezone_offset(date)) * 1000);
 				}
 			}
