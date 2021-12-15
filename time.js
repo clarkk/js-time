@@ -1,13 +1,29 @@
 'use strict';
 
 (function(root){
+	let locale;
+	
 	root.Time = {
 		init(lang){
-			
+			switch(lang){
+				case 'da':
+					locale = 'da-DK';
+					break;
+				
+				case 'en':
+					locale = 'en-US';
+					break;
+				
+				default:
+					throw Error('Invalid time lang: '+lang);
+			}
 		},
 		date(time, mode='full', apply_timezone=false){
-			let date;
+			if(!locale){
+				throw Error('Time locale not set');
+			}
 			
+			let date;
 			if(time != 'now'){
 				if(!parseInt(time)){
 					return '';
@@ -33,6 +49,10 @@
 				
 				case 'short':
 					d.datestamp = zerofill(d.day, 2)+'-'+zerofill(d.month, 2)+'-'+d.year.toString().substr(2, 2);
+					break;
+				
+				case 'weekday':
+					d.datestamp = ucfirst(date.toLocaleDateString(locale, {weekday : 'short'}))+' '+d.day+'/'+d.month;
 					break;
 				
 				default:
@@ -62,6 +82,11 @@
 	
 	function timezone_offset(date){
 		return date.getTimezoneOffset() * 60;
+	}
+	
+	
+	function ucfirst(str){
+		return str.charAt(0).toUpperCase() + str.slice(1);
 	}
 	
 	function zerofill(num, width){
