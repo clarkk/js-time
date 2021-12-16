@@ -1,22 +1,40 @@
 'use strict';
 
 (function(root){
+	const lang_da = 'da', lang_en = 'en';
+	
 	let locale, elapsed_units = {
-		days : 60 * 60 * 24,
-		hours : 60 * 60,
-		minutes : 60,
-		seconds : 1
+		days : {
+			value : 60 * 60 * 24,
+			[lang_da] : 'dage',
+			[lang_en] : 'days'
+		},
+		hours : {
+			value : 60 * 60,
+			[lang_da] : 'timer',
+			[lang_en] : 'hours'
+		},
+		minutes : {
+			value : 60,
+			[lang_da] : 'minutter',
+			[lang_en] : 'minutes'
+		},
+		seconds : {
+			value : 1,
+			[lang_da] : 'sekunder',
+			[lang_en] : 'seconds'
+		}
 	};
 	
 	root.Time = {
 		init(lang){
 			switch(lang){
-				case 'da':
-					locale = 'da-DK';
+				case lang_da:
+					locale = lang_da+'-DK';
 					break;
 				
-				case 'en':
-					locale = 'en-US';
+				case lang_en:
+					locale = lang_en+'-US';
 					break;
 				
 				default:
@@ -76,11 +94,11 @@
 			time = Math.max(min_time, Math.abs(time));
 			
 			for(let k in elapsed_units){
-				scale = time / elapsed_units[k];
+				scale = time / elapsed_units[k].value;
 				
 				if(scale >= 1){
 					n = Math.round(scale);
-					time = time % elapsed_units[k];
+					time = time % elapsed_units[k].value;
 					unit = k;
 					break;
 				}
@@ -92,7 +110,7 @@
 				n *= -1;
 			}
 			
-			return n+' '+unit;
+			return n+' '+elapsed_units[unit][get_lang()];
 		}
 	};
 	
@@ -111,16 +129,20 @@
 		};
 	}
 	
+	function get_lang(){
+		return locale.split('-')[0];
+	}
+	
 	function timezone_offset(date){
 		return date.getTimezoneOffset() * 60;
 	}
 	
-	function ucfirst(str){
-		return str.charAt(0).toUpperCase() + str.slice(1);
+	function ucfirst(s){
+		return s.charAt(0).toUpperCase()+s.slice(1);
 	}
 	
-	function zerofill(num, width){
-		let zeros = Math.max(0, width - Math.floor(num).toString().length);
-		return Math.pow(10, zeros).toString().substr(1)+num;
+	function zerofill(n, width){
+		let zeros = Math.max(0, width - Math.floor(n).toString().length);
+		return Math.pow(10, zeros).toString().substr(1)+n;
 	}
 })(this);
