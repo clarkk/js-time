@@ -89,7 +89,7 @@
 		},
 		
 		elapsed(time, min_time=1){
-			let signed = (time < 0), i = 1, n = 0, scale = 0, unit;
+			let signed = (time < 0), n = 0, scale = 0, unit;
 			
 			time = Math.max(min_time, Math.abs(time));
 			
@@ -102,8 +102,6 @@
 					unit = k;
 					break;
 				}
-				
-				i++;
 			}
 			
 			if(signed){
