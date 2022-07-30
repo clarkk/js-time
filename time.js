@@ -48,15 +48,11 @@ window.Time = Object.freeze({
 			if(!parseInt(time)) return '';
 			
 			date = new Date(time * 1000);
-			if(apply_timezone){
-				date.setTime((time - timezone_offset(date)) * 1000);
-			}
+			if(apply_timezone) date.setTime((time - timezone_offset(date)) * 1000);
 		}
 		else{
 			date = new Date();
-			if(apply_timezone == null || apply_timezone){
-				date.setTime((date.getTime() / 1000 - timezone_offset(date)) * 1000);
-			}
+			if(apply_timezone == null || apply_timezone) date.setTime((date.getTime() / 1000 - timezone_offset(date)) * 1000);
 		}
 		
 		let d = get_date(date);
@@ -80,9 +76,7 @@ window.Time = Object.freeze({
 	},
 	time(apply_timezone){
 		let date = new Date(), time = date.getTime() / 1000;
-		if(apply_timezone){
-			time -= timezone_offset(date);
-		}
+		if(apply_timezone) time -= timezone_offset(date);
 		return Math.round(time);
 	},
 	elapsed(time, min_time=1){
@@ -92,7 +86,6 @@ window.Time = Object.freeze({
 		
 		for(let k in elapsed_units){
 			scale = time / elapsed_units[k].value;
-			
 			if(scale >= 1){
 				n = Math.round(scale);
 				time = time % elapsed_units[k].value;
@@ -101,9 +94,7 @@ window.Time = Object.freeze({
 			}
 		}
 		
-		if(signed){
-			n *= -1;
-		}
+		if(signed) n *= -1;
 		
 		return n+' '+elapsed_units[unit][get_lang()];
 	}
