@@ -44,15 +44,15 @@ window.Time = Object.freeze({
 		if(!locale) throw new Error('Time locale not set');
 		
 		let date;
-		if(time != 'now'){
+		if(time == 'now'){
+			date = new Date();
+			if(apply_timezone == null || apply_timezone) date.setTime((date.getTime() / 1000 - timezone_offset(date)) * 1000);
+		}
+		else{
 			if(!parseInt(time)) return '';
 			
 			date = new Date(time * 1000);
 			if(apply_timezone) date.setTime((time - timezone_offset(date)) * 1000);
-		}
-		else{
-			date = new Date();
-			if(apply_timezone == null || apply_timezone) date.setTime((date.getTime() / 1000 - timezone_offset(date)) * 1000);
 		}
 		
 		let d = get_date(date);
