@@ -40,6 +40,84 @@ window.Time = Object.freeze({
 			throw new Error('Invalid time lang: '+lang);
 		}
 	},
+	calendar(date){
+		let timestamp, datestamp, time, year, month, day, weekday, month_days, month_first_date, month_first_day, month_first_week, is_valid = false;
+		const o = {
+			is_valid(){
+				return is_valid;
+			},
+			set(date){
+				if(date){
+					if(typeof date == 'object'){
+						year = date.year;
+						month = date.month;
+						day = date.day;
+					}
+					else{
+						date = parse_date(date);
+						year = date[2];
+						if(year && year.length == 2) year = '20'+year;
+						month = date[1];
+						day = date[0];
+					}
+					timestamp = new Date(year, month - 1, day);
+				}
+				else{
+					timestamp = new Date();
+					year = timestamp.getFullYear();
+					month = timestamp.getMonth() + 1;
+					day = timestamp.getDate();
+				}
+				compile();
+				return this.get();
+			},
+			month_offset(offset){
+				const next_month_days = new Date(year, month + offset, 0).getDate();
+				
+				if(day > next_month_days) timestamp.setDate(next_month_days);
+				timestamp.setMonth(timestamp.getMonth() + offset);
+				
+				year = timestamp.getFullYear();
+				month = timestamp.getMonth() + 1;
+				day = timestamp.getDate();
+				
+				compile();
+				return this.get();
+			},
+			get(){
+				return Object.freeze({
+					datestamp: datestamp,
+					year: year,
+					month: month,
+					day: day,
+					month_days: month_days,
+					month_first_week: month_first_week,
+					month_first_day: month_first_day
+				});
+			}
+		};
+		
+		o.set(date);
+		
+		function compile(){
+			time = Math.round(timestamp.getTime() / 1000) - (timestamp.getTimezoneOffset() * 60);
+			datestamp = Time.date(time).datestamp;
+			
+			year = parseInt(year, 10);
+			month = parseInt(month, 10);
+			day = parseInt(day, 10);
+			weekday = timestamp.getDay() || 7;
+			
+			month_days = new Date(year, month, 0).getDate();
+			month_first_date = new Date(year, month - 1, 1);
+			month_first_day = month_first_date.getDay() || 7;
+			month_first_week = month_first_date.getWeek();
+			
+			is_valid = year >= 1900 && year <= 2100 && month >= 1 && month <= 12 && day >= 1 && day <= 31;
+		}
+		
+		return Object.freeze(o);
+	},
 	date(time, mode=MODE_FULL, apply_timezone){
 		if(!locale) throw new Error('Time locale not set');
 		
@@ -100,6 +178,18 @@ window.Time = Object.freeze({
 	}
 });
 
+function parse_date(date){
+	if(date.indexOf('-') > -1) date = date.split('-');
+	else{
+		date = [
+			date.substr(0, 2) || '',
+			date.substr(2, 2) || '',
+			date.substr(4, 4) || ''
+		];
+	}
+	return date;
+}
+
 function get_date(date){
 	let hour = date.getUTCHours(), min = date.getUTCMinutes(), sec = date.getUTCSeconds(), time = zerofill(hour, 2)+':'+zerofill(min, 2);
 	return {
@@ -130,5 +220,16 @@ function ucfirst(s){
 function zerofill(n, width){
 	let zeros = Math.max(0, width - Math.floor(n).toString().length);
 	return Math.pow(10, zeros).toString().substr(1)+n;
+}
+
+Date.prototype.getWeek = function(){
+	var date = new Date(this.getTime());
+	date.setHours(0, 0, 0, 0);
+	// Thursday in current week decides the year.
+	date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+	// January 4 is always in week 1.
+	var week1 = new Date(date.getFullYear(), 0, 4);
+	// Adjust to Thursday in week 1 and count number of weeks from date to week1.
+	return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
 })();
