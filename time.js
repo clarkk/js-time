@@ -61,14 +61,12 @@ window.Time = Object.freeze({
 						day = date[0];
 					}
 					timestamp = new Date(year, month - 1, day);
+					compile();
 				}
 				else{
 					timestamp = new Date();
-					year = timestamp.getFullYear();
-					month = timestamp.getMonth() + 1;
-					day = timestamp.getDate();
+					compile(true);
 				}
-				compile();
 				return this.get();
 			},
 			month_offset(offset){
@@ -77,11 +75,7 @@ window.Time = Object.freeze({
 				if(day > next_month_days) timestamp.setDate(next_month_days);
 				timestamp.setMonth(timestamp.getMonth() + offset);
 				
-				year = timestamp.getFullYear();
-				month = timestamp.getMonth() + 1;
-				day = timestamp.getDate();
-				
-				compile();
+				compile(true);
 				return this.get();
 			},
 			get(){
@@ -99,7 +93,13 @@ window.Time = Object.freeze({
 		
 		o.set(date);
 		
-		function compile(){
+		function compile(set){
+			if(set){
+				year = timestamp.getFullYear();
+				month = timestamp.getMonth() + 1;
+				day = timestamp.getDate();
+			}
+			
 			time = Math.round(timestamp.getTime() / 1000) - (timestamp.getTimezoneOffset() * 60);
 			datestamp = Time.date(time).datestamp;
 			
