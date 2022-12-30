@@ -128,7 +128,7 @@ window.Time = Object.freeze({
 			if(apply_timezone == null || apply_timezone) date.setTime((date.getTime() / 1000 - timezone_offset(date)) * 1000);
 		}
 		else{
-			if(!parseInt(time)) return '';
+			if(!parseInt(time)) return null;
 			
 			date = new Date(time * 1000);
 			if(apply_timezone) date.setTime((time - timezone_offset(date)) * 1000);
