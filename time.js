@@ -60,6 +60,8 @@ window.Time = Object.freeze({
 						month = date[1];
 						day = date[0];
 					}
+					if(!is_digits(year) || !is_digits(month) || !is_digits(day)) return null;
+					
 					timestamp = new Date(year, month - 1, day);
 					compile();
 				}
@@ -228,6 +230,10 @@ function ucfirst(s){
 function zerofill(n, width){
 	let zeros = Math.max(0, width - Math.floor(n).toString().length);
 	return Math.pow(10, zeros).toString().substr(1)+n;
+}
+
+function is_digits(s){
+	return s.match(/^[0-9]+$/) != null;
 }
 
 Date.prototype.getWeek = function(){
