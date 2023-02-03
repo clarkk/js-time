@@ -233,7 +233,7 @@ function zerofill(n, width){
 }
 
 function is_digits(s){
-	return s.match(/^[0-9]+$/) != null;
+	return s && s.match(/^[0-9]+$/) !== null;
 }
 
 Date.prototype.getWeek = function(){
