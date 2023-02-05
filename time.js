@@ -233,6 +233,7 @@ function zerofill(n, width){
 }
 
 function is_digits(s){
+	if(typeof s === 'number') return true;
 	return s && s.match(/^[0-9]+$/) !== null;
 }
 
