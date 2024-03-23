@@ -104,19 +104,39 @@ window.Time = Object.freeze({
 			}
 			
 			time = Math.round(timestamp.getTime() / 1000) - (timestamp.getTimezoneOffset() * 60);
-			datestamp = Time.date(time).datestamp;
 			
-			year = parseInt(year, 10);
-			month = parseInt(month, 10);
-			day = parseInt(day, 10);
-			weekday = timestamp.getDay() || 7;
-			
-			month_days = new Date(year, month, 0).getDate();
-			month_first_date = new Date(year, month - 1, 1);
-			month_first_day = month_first_date.getDay() || 7;
-			month_first_week = month_first_date.getWeek();
-			
-			is_valid = year >= 1900 && year <= 2100 && month >= 1 && month <= 12 && day >= 1 && day <= 31;
+			const t = Time.date(time);
+			if(t == null){
+				time = null;
+				datestamp = null;
+				
+				year = null;
+				month = null;
+				day = null;
+				weekday = null;
+				
+				month_days = null;
+				month_first_date = null;
+				month_first_day = null;
+				month_first_week = null;
+				
+				is_valid = false;
+			}
+			else{
+				datestamp = Time.date(time).datestamp;
+				
+				year = parseInt(year, 10);
+				month = parseInt(month, 10);
+				day = parseInt(day, 10);
+				weekday = timestamp.getDay() || 7;
+				
+				month_days = new Date(year, month, 0).getDate();
+				month_first_date = new Date(year, month - 1, 1);
+				month_first_day = month_first_date.getDay() || 7;
+				month_first_week = month_first_date.getWeek();
+				
+				is_valid = year >= 1900 && year <= 2100 && month >= 1 && month <= 12 && day >= 1 && day <= 31;
+			}
 		}
 		
 		return Object.freeze(o);
